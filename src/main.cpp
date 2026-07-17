@@ -39,7 +39,6 @@ void setup() {
     lcd.init();
     lcd.clear();
     lcd.setCursor(0,0);
-    lcd.backlight();
 
     pinMode(BTN_LEFT, INPUT_PULLUP);
     pinMode(BTN_RIGHT, INPUT_PULLUP);
@@ -83,6 +82,9 @@ void loop() {
     if (!digitalRead(BTN_LEFT)) {
         selection = (selection + NUM_SELECTION - 1) % NUM_SELECTION;
         should_redraw = true;
+        lcd.backlight();
+        delay(3000);
+        lcd.noBacklight();
     }
 
     if (!digitalRead(BTN_RIGHT)) {
