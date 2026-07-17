@@ -1,3 +1,14 @@
+/*************************************************************************
+ * ALARM, TEMPERATURE AND HUMIDITY CHECK UNIT
+ * HOW TO USE
+ * ALL POSITIONS ARE RELATIVE TO THE SCREEN  
+ * TOP LEFT BUTTON CLICK - MOVE LEFT
+ * TOP RIGHT BUTTON CLICK - MOVE RIGHT
+ * BOTTOM LETF BUTTON CLICK - DECREASES VALUE
+ * BOTTOM RIGHT BUTTON CLICK - INCREASES VALUE
+ * TOP LEFT BUTTON AND TOP RIGHT BUTTON CLICK - TOGGLE SCREEN LIGHT
+*************************************************************************/
+
 // Date and time functions using a PCF8523 RTC connected via I2C and Wire lib
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
@@ -24,6 +35,9 @@ uint16_t alarms[NUM_ALARMS], now;
 // 0 is no selection, then alarms
 uint8_t selection;
 
+// light mode
+boolean light;
+
 // accounts for no selection
 #define NUM_SELECTION ((2*NUM_ALARMS)+1)
 
@@ -39,6 +53,7 @@ void setup() {
     lcd.init();
     lcd.clear();
     lcd.setCursor(0,0);
+    light = false;
 
     pinMode(BTN_LEFT, INPUT_PULLUP);
     pinMode(BTN_RIGHT, INPUT_PULLUP);
@@ -79,15 +94,12 @@ void loop() {
     bool should_redraw = false;
     // buttons
 
-    if (!digitalRead(BTN_LEFT)) {
+    if (!digitalRead(BTN_LEFT) && digitalRead(BTN_RIGHT)) {
         selection = (selection + NUM_SELECTION - 1) % NUM_SELECTION;
         should_redraw = true;
-        lcd.backlight();
-        delay(3000);
-        lcd.noBacklight();
     }
 
-    if (!digitalRead(BTN_RIGHT)) {
+    if (!digitalRead(BTN_RIGHT) && digitalRead(BTN_LEFT)) {
         selection = (selection + 1) % NUM_SELECTION;
         should_redraw = true;
     }
@@ -104,6 +116,17 @@ void loop() {
         uint8_t step = (selection % 2) ? 60 : 1;
         alarms[alarm] = (alarms[alarm] + step) % MINUTES_PER_24H;
         should_redraw = true;
+    }
+
+    if (!digitalRead(BTN_LEFT) && !digitalRead(BTN_RIGHT)){
+        if (!light) {
+            light = true;
+            lcd.backlight();
+        }
+        else {
+            light = false;
+            lcd.noBacklight();
+        }
     }
 
     // alarms
