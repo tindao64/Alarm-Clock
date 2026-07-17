@@ -30,6 +30,7 @@ uint8_t selection;
 unsigned long last_dht_sample;
 
 void redraw_screen();
+void selection_cursor();
 
 void setup() {
     Serial.begin(9600);
@@ -133,6 +134,8 @@ void loop() {
         lcd.print(humidity, 1); // 000.0
         lcd.print("% ");
     }
+    
+    selection_cursor();
 
     delay(300);
 }
@@ -164,7 +167,9 @@ void redraw_screen() {
         lcd.setCursor(col, row);
         write_time(alarms[i]);
     }
+}
 
+void selection_cursor() {
     if (selection != 0) {
         uint8_t row = 1 + ((selection - 1) / 6);
         uint8_t col = ((selection - 1) % 6) * 3;
