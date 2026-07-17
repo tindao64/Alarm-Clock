@@ -31,6 +31,7 @@ unsigned long last_dht_sample;
 
 void redraw_screen();
 void selection_cursor();
+void ringtone();
 
 void setup() {
     Serial.begin(9600);
@@ -38,6 +39,7 @@ void setup() {
     lcd.init();
     lcd.clear();
     lcd.setCursor(0,0);
+    lcd.backlight();
 
     pinMode(BTN_LEFT, INPUT_PULLUP);
     pinMode(BTN_RIGHT, INPUT_PULLUP);
@@ -110,7 +112,7 @@ void loop() {
     if (time_now.second() <= 2) {
         for (uint16_t alarm : alarms) {
             if (alarm == now && alarm != 0) {
-                tone(BUZZER, 1000, 10000);
+                ringtone();
             }
         }
     }
@@ -177,4 +179,8 @@ void selection_cursor() {
         lcd.cursor();
         lcd.setCursor(col, row);
     }
+}
+
+void ringtone() {
+    tone(BUZZER, 125, 10000);
 }
