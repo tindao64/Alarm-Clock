@@ -207,5 +207,11 @@ void selection_cursor() {
 }
 
 void ringtone() {
-    tone(BUZZER, 125, 10000);
+    // 1kHz beeps, 50ms each, 500ms apart, for 20 seconds in total
+    for (int seconds = 0; seconds < 20; ++seconds) {
+        for (int beep = 0; beep < 2; ++beep) {
+            tone(BUZZER, 1000, 50);
+            delay(500);
+        }
+    }
 }
